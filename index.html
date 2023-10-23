@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+
+</style>
+<body>
+    <div class="container" id="container">
+        <h1>Tetris Game</h1>
+        <h5 id="score" class="score"></h5>
+        <canvas id="game-canvas" width="300" height="600"></canvas>
+    </div>
+    <script>
+        const gameClock = 1000;
+        const blockSideLength = 30;
+        const rows = 20;
+        const cols = 10;
+        const scoreWorth = 10;
+        const shapes=[
+            [],
+            [
+                [0,0,0,0],
+                [1,1,1,1],
+                [0,0,0,0],
+                [0,0,0,0]
+            ],[
+                [2,0,0],
+                [2,2,2],
+                [0,0,0]
+            ],[
+                [0,0,3],
+                [3,3,3],
+                [0,0,0]
+            ],[
+                [4,4],
+                [4,4]
+            ],[
+                [0,5,5],
+                [5,5,0],
+                [0,0,0]
+            ],[
+                [0,6,0],
+                [6,6,6],
+                [0,0,0]
+            ],[
+                [7,7,0],
+                [0,7,7],
+                [0,0,0]
+            ]
+        ];
+        const colors=[
+            'white',
+            'cyan',
+            'azure',
+            'orange',
+            'yellow',
+            'green',
+            'salmon',
+            'red'
+        ];
+        class Piece{
+            constructor(shape, ctx){
+                this.shape = shape;
+                this.ctx = ctx;
+                this.x = Math.floor(cols/2);
+                this.y = 0;
+            }
+            renderPiece(){
+                this.shape.forEach((row, y)=>{
+                    row.forEach((value, x)=>{
+                        if(value>0){
+                            ctx.fillStyle = colors[value];
+                            ctx.fillRect(this.x + x, this.y + y, 1, 1);
+                        }
+                    });
+                });
+            }
+        }
+        class GameModel{
+            constructor(ctx){
+                this.ctx = ctx;
+                this.fallingPiece = null;
+                this.grid = this.makeStartGrid();
+            };
+            makeStartGrid(){
+                let grid = [];
+                for (let y = 0; y < rows; y++) {
+                    grid.push([]);
+                    for (let x = 0; x < cols; x++) {
+                        grid[grid.length-1].push(0);
+                    }
+                }
+                return grid;
+            }
+            collision(x, y){
+                console.log(`x: ${x}, y: ${y}`);
+            }
+            moveDown(){
+                if(this.fallingPiece===null){
+                    collision(2,5)
+                }else if(this.fallingPiece!==null){
+                    console.log('hello falling piece here from move down');
+                }
+            };
+            rotate(){
+                if(this.fallingPiece!==null){
+                    console.log('hello falling piece here from rotate');
+                }
+            }
+        }
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.scale(blockSideLength, blockSideLength);
+        const piece = new Piece(shapes[1], ctx);
+        const model = new GameModel(ctx);
+        setInterval(()=>{
+            piece.y++;
+            newGameState();
+        }, gameClock);
+        function newGameState(){
+            fullSend();
+        }
+        const fullSend=()=>{
+            const allFilled = (row)=>{
+                for(let r of row){
+                    if(r===1){
+                        return false;
+                    }
+                }
+                return true;
+            }
+            for(let i=0;i<model.grid.length;i++){
+                if(allFilled(model.grid[i])){
+                    model.grid.splice(i,1);
+                    model.grid.unshift([0,0,0,0,0,0,0,0,0,0]);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
