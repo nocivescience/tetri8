@@ -11,10 +11,13 @@
 <body>
     <div class="container" id="container">
         <h1>Tetris Game</h1>
-        <h5 id="score" class="score"></h5>
+        <h5 id="score-board" class="score-board"></h5>
         <canvas id="game-canvas" width="300" height="600"></canvas>
     </div>
     <script>
+        const scoreBoard = document.getElementById('score-board');
+        const gameCanvas = document.getElementById('game-canvas');
+        const ctx = gameCanvas.getContext('2d');
         const gameClock = 1000;
         const blockSideLength = 30;
         const rows = 20;
@@ -53,6 +56,7 @@
             ]
         ];
         const colors=[
+            'black',
             'white',
             'cyan',
             'azure',
@@ -62,6 +66,7 @@
             'salmon',
             'red'
         ];
+        let score = 0;
         class Piece{
             constructor(shape, ctx){
                 this.shape = shape;
@@ -97,37 +102,50 @@
                 return grid;
             }
             collision(x, y){
-                console.log(`x: ${x}, y: ${y}`);
+
             }
+            renderGameState(){
+                if(this.fallingPiece===null){
+                    this.fallingPiece.renderPiece();
+                    console.log('hello falling piece here from render game state');
+                }
+            };
             moveDown(){
                 if(this.fallingPiece===null){
-                    collision(2,5)
+                    this.renderGameState()
                 }else if(this.fallingPiece!==null){
-                    console.log('hello falling piece here from move down');
+                    this.fallingPiece=null;
                 }
             };
             rotate(){
                 if(this.fallingPiece!==null){
-                    console.log('hello falling piece here from rotate');
+                    
                 }
             }
         }
-        const canvas = document.getElementById('game-canvas');
-        const ctx = canvas.getContext('2d');
         ctx.scale(blockSideLength, blockSideLength);
-        const piece = new Piece(shapes[1], ctx);
         const model = new GameModel(ctx);
         setInterval(()=>{
-            piece.y++;
             newGameState();
         }, gameClock);
         function newGameState(){
             fullSend();
+            if(model.fallingPiece===null){
+                const random= Math.floor(Math.random()*shapes.length)+1;
+                const piece = new Piece(shapes[random], ctx);
+                // const rand= Math.floor(Math.random()*shapes.length)+1;
+                // piece.renderPiece();
+                model.fallingPiece = piece;
+                model.moveDown();
+            }else{
+                model.moveDown();
+            }
+            // console.log(model.fallingPiece);
         }
         const fullSend=()=>{
             const allFilled = (row)=>{
                 for(let r of row){
-                    if(r===1){
+                    if(r===0){
                         return false;
                     }
                 }
@@ -135,10 +153,12 @@
             }
             for(let i=0;i<model.grid.length;i++){
                 if(allFilled(model.grid[i])){
+                    score+=scoreWorth;
                     model.grid.splice(i,1);
                     model.grid.unshift([0,0,0,0,0,0,0,0,0,0]);
                 }
             }
+            scoreBoard.innerText = `Score: ${score}`;
         }
     </script>
 </body>
