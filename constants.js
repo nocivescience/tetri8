@@ -209,8 +209,28 @@ let model = new GameModel(ctx)
 
 let score = 0 
 
+const colors2= [
+    'red',
+    'green',
+    'orange',
+    'yellow',
+]
+
+function colorLetter(texto){
+    const scoreLetter= texto.textContent.split('');
+    texto.innerHTML = scoreLetter.map((letter,i) => 
+        `<span style="color: ${colors2[Math.floor(Math.random()*colors2.length)]}">${letter}</span>`
+    ).join('');
+}
+
+// setInterval(colorLetter, 1000)
+
+const titulo= document.getElementById('titulo');
+
 setInterval(() => {
     newGameState()
+    colorLetter(scoreboard);
+    colorLetter(titulo);
 }, GAME_CLOCK); 
 
 
